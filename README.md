@@ -1390,7 +1390,7 @@ MM '1'                           # string alias
 [Authors](#synopsis)
 ====================
 
-  * Pierre VIGIER
+  * Pierre Vigier
 
   * Herbert Breunung
 
@@ -1404,7 +1404,11 @@ MM '1'                           # string alias
 [License](#synopsis)
 ====================
 
-Artistic License 2.0 (GPL and BSD at the same time)
+Copyright 2015 - 2020 Pierre Vigier, Herbert Breunung
+
+Copyright 2024 The Raku Community
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
 [See Also](#synopsis)
 =====================

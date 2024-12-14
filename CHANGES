@@ -1,6 +1,8 @@
 Revision history for Math::Matrix
 
 {{$NEXT}}
+
+0.4.1  2024-12-14T15:53:23+01:00
     - First version as a Raku Community module
 
  0.4.0:

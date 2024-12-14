@@ -1764,7 +1764,7 @@ MM '1'                           # string alias
 
 =head1 L<Authors|#synopsis>
 
-=item Pierre VIGIER
+=item Pierre Vigier
 =item Herbert Breunung
 
 =head1 L<Contributors|#synopsis>
@@ -1774,7 +1774,11 @@ MM '1'                           # string alias
 
 =head1 L<License|#synopsis>
 
-Artistic License 2.0 (GPL and BSD at the same time)
+Copyright 2015 - 2020 Pierre Vigier, Herbert Breunung
+
+Copyright 2024 The Raku Community
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
 =head1 L<See Also|#synopsis>
 
