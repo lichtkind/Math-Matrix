@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/raku-community-modules/Math-Matrix.svg?branch=master)](https://travis-ci.org/raku-community-modules/Math-Matrix)
+[![Actions Status](https://github.com/raku-community-modules/Math-Matrix/actions/workflows/linux.yml/badge.svg)](https://github.com/raku-community-modules/Math-Matrix/actions) [![Actions Status](https://github.com/raku-community-modules/Math-Matrix/actions/workflows/macos.yml/badge.svg)](https://github.com/raku-community-modules/Math-Matrix/actions) [![Actions Status](https://github.com/raku-community-modules/Math-Matrix/actions/workflows/windows.yml/badge.svg)](https://github.com/raku-community-modules/Math-Matrix/actions)
 
 NAME
 ====
