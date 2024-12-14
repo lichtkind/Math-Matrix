@@ -1,8 +1,8 @@
-use lib "lib";
 use Test;
-use Math::Matrix;
-plan 5;
 
+use Math::Matrix;
+
+plan 5;
 
 subtest {
     plan 4;
@@ -95,3 +95,4 @@ subtest {
     
 }, "Submatrix";
 
+# vim: expandtab shiftwidth=4

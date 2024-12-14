@@ -1,4 +1,3 @@
-use v6.c;
 use Math::Matrix::Type;
 
 unit module Math::Matrix::ArrayOfArray;
@@ -76,3 +75,5 @@ our sub map (@m, &coderef){
     for ^@m.elems -> $row { @res[$row] = @res[$row].map(&coderef) }
     @res;
 }
+
+# vim: expandtab shiftwidth=4

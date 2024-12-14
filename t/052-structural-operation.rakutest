@@ -1,6 +1,7 @@
-use lib "lib";
 use Test;
+
 use Math::Matrix;
+
 plan 4;
 
 my $a = Math::Matrix.new( [[1,2,3],[2,3,4],[3,4,5]] );
@@ -85,3 +86,5 @@ subtest {
     ok $a.splice-columns(-1,0,[[1,0,0],[0,1,0],[0,0,1]]) ~~ $answer4,   "append columns of data";
 
 }, "Splice Columns";
+
+# vim: expandtab shiftwidth=4

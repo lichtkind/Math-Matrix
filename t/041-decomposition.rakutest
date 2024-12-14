@@ -1,6 +1,7 @@
-use lib "lib";
 use Test;
+
 use Math::Matrix;
+
 plan 2;
 
 subtest {
@@ -64,3 +65,5 @@ subtest {
     my ($L, $D) = $simple.Cholesky-decomposition(:diagonal);
     ok $L dot $D dot $L.T ~~ $simple,                  "Cholesky with a diagonal matrix is a working decomposition";
 }, "Choleski";
+
+# vim: expandtab shiftwidth=4

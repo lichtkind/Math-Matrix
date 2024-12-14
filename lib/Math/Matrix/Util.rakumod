@@ -1,4 +1,3 @@
-use v6.c;
 use Math::Matrix::Type;
 
 unit role Math::Matrix::Util;
@@ -50,3 +49,5 @@ submethod !check-indices (@row, @col) {
 ################################################################################
 
 method cofactor-sign( Int:D $row, Int:D $col ) { (-1) ** (($row+$col) mod 2) }
+
+# vim: expandtab shiftwidth=4

@@ -1,9 +1,7 @@
-use v6.c;
-
 use Math::Matrix::Util;
 use Math::Matrix::Type;
 
-unit class Math::Matrix:ver<0.3.9>:auth<github:pierre-vigier> does Math::Matrix::Util;
+unit class Math::Matrix does Math::Matrix::Util;
 use AttrX::Lazy;
 use Math::Matrix::ArrayOfArray;
 
@@ -928,3 +926,5 @@ multi sub infix:<X*>( Math::Matrix:D $a, Math::Matrix:D $b --> Math::Matrix:D) i
 
 multi sub prefix:<MM>(Str   $m --> Math::Matrix:D) is tighter(&postcircumfix:<[ ]>) is export(:MM) { Math::Matrix.new($m) }
 multi sub prefix:<MM>(List  $m --> Math::Matrix:D) is tighter(&postcircumfix:<[ ]>) is export(:MM) { Math::Matrix.new(@$m) }
+
+# vim: expandtab shiftwidth=4

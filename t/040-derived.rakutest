@@ -1,6 +1,7 @@
- use lib "lib";
 use Test;
+
 use Math::Matrix;
+
 plan 5;
 
 subtest {
@@ -66,3 +67,5 @@ subtest {
     ok $matrix.reduced-row-echelon-form() ~~ $expected, "Rref is correct";
     ok $matrix.rref() ~~ $expected, "Rref is correct, using shortcut";
 }, "row echelon";
+
+# vim: expandtab shiftwidth=4

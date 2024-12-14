@@ -1,24 +1,32 @@
 {
-  "auth" : "github:pierre-vigier",
-  "authors" : [
-    "github:pierre-vigier",
-    "github:lichtkind"
+  "auth": "zef:raku-community-modules",
+  "authors": [
+    "Pierre Vigier",
+    "Herbert Breunung"
   ],
-  "build-depends" : [ ],
-  "depends" : [ "AttrX::Lazy" ],
-  "description" : "create, compare, compute and measure matrices",
-  "license" : "Artistic-2.0",
-  "name" : "Math::Matrix",
-  "perl" : "6.c",
-  "provides" : {
-      "Math::Matrix"       : "lib/Math/Matrix.pm6",
-      "Math::Matrix::Util" : "lib/Math/Matrix/Util.pm6",
-      "Math::Matrix::Type" : "lib/Math/Matrix/Type.pm6",
-      "Math::Matrix::ArrayOfArray" : "lib/Math/Matrix/ArrayOfArray.pm6"
+  "build-depends": [
+  ],
+  "depends": [
+    "AttrX::Lazy"
+  ],
+  "description": "Create, compare, compute and measure matrices",
+  "license": "Artistic-2.0",
+  "name": "Math::Matrix",
+  "perl": "6.c",
+  "provides": {
+    "Math::Matrix": "lib/Math/Matrix.rakumod",
+    "Math::Matrix::ArrayOfArray": "lib/Math/Matrix/ArrayOfArray.rakumod",
+    "Math::Matrix::Type": "lib/Math/Matrix/Type.rakumod",
+    "Math::Matrix::Util": "lib/Math/Matrix/Util.rakumod"
   },
-  "resources" : [ ],
-  "source-url" : "git://github.com/pierre-vigier/Perl6-Math-Matrix.git",
-  "tags" : [ "Math" ],
-  "test-depends" : [ "Test", "Test::META"],
-  "version" : "0.3.9"
+  "resources": [
+  ],
+  "source-url": "https://github.com/raku-community-modules/Math-Matrix.git",
+  "tags": [
+    "Math",
+    "Matrix"
+  ],
+  "test-depends": [
+  ],
+  "version": "0.3.9"
 }

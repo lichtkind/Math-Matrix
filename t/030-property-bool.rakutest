@@ -1,6 +1,7 @@
-use lib "lib";
 use Test;
+
 use Math::Matrix;
+
 plan 100;
 
 my $matrixa = Math::Matrix.new([[1,2],[3,4]]);
@@ -166,3 +167,5 @@ ok $identity.is-positive-definite, "Identity matrix is positive definite.";
 ok $identity.is-positive-semidefinite, "Identity matrix is positive semidefinite.";
 ok Math::Matrix.new([[2,-1,0],[-1,2,-1],[0,-1,2]]).is-positive-definite, "Special matrix is positive definite.";
 nok $zero.is-positive-definite,    "zero matrix is not positive definite.";
+
+# vim: expandtab shiftwidth=4

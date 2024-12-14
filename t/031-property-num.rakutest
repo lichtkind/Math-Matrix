@@ -1,6 +1,7 @@
-use lib "lib";
 use Test;
+
 use Math::Matrix;
+
 plan 9;
 
 subtest {
@@ -164,3 +165,5 @@ subtest {
     ok $matrixr.narrowest-element-type ~~ Int, "got narrowest type of mostly rational matrix correct";
     ok $matrixr.widest-element-type ~~ FatRat, "got widest type of mostly rational typed matrix correct";
 }, 'Element Type';
+
+# vim: expandtab shiftwidth=4

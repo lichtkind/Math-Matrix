@@ -1,15 +1,8 @@
 =begin pod
+
 =head1 NAME
 
 Math::Matrix - create, compare, compute and measure 2D matrices
-
-=head1 VERSION
-
-0.3.9
-
-=head1 !MOVING!
-
-This repo will be moved to a L<different place|https://github.com/lichtkind/Raku-Math-Matrix> soon.
 
 =head1 SYNOPSIS
 
@@ -32,7 +25,7 @@ Table of Content:
 Because the list based, functional toolbox of Raku is not enough to calculate matrices comfortably,
 there is a need for a dedicated data type. The aim is to provide a full featured set of structural and
 mathematical operations that integrate fully with the Raku conventions.
-This module is pure perl and we plan to use native shaped arrays one day.
+This module is pure Raku and we plan to use native shaped arrays one day.
 
 Matrices are readonly - methods and operators do create new matrix objects.
 All methods return readonly data or deep clones - also the constructor does a deep clone of provided data.
@@ -47,7 +40,7 @@ Mathematically or otherwise undefined operations will cause an exception.
 =item B<L<accessors|#accessors>>: L<element|#element>, L<AT-POS|#at-pos>, L<row|#row>, L<column|#column>,
         L<diagonal|#diagonal>, L<skew-diagonal|#skew-diagonal>, L<submatrix|#submatrix>
 =item B<L<converter|#converter>>: L<Bool|#bool>, L<Str|#str>, L<Numeric|#numeric>, L<Range|#range>,
-        L<Array|#array>, L<list|#list>, L<list-rows|#list-rows>, L<list-columns|#list-columns>, L<Hash|#hash>, L<gist|#gist>, L<perl|#perl>
+        L<Array|#array>, L<list|#list>, L<list-rows|#list-rows>, L<list-columns|#list-columns>, L<Hash|#hash>, L<gist|#gist>, L<raku|#raku>
 =item B<L<boolean properties|#boolean-properties>>: L<zero|#is-zero>, L<identity|#is-identity>,
         L<square|#is-square>, L<triangular|#is-triangular>, L<tri-|#is-tridiagonal>, L<anti-|#is-anti-diagonal>, L<diagonal|#is-diagonal>,
         L<-dominant|#is-diagonally-dominant>, L<-constant|#is-diagonal-constant>, L<catalecticant|#is-catalecticant>,
@@ -67,8 +60,6 @@ Mathematically or otherwise undefined operations will cause an exception.
 =item B<L<shortcuts|#shortcuts>>:   L<T|#transposed>,   L<conj|#conjugated>,   L<det|#determinant>,   L<rref|#reduced-row-echelon-form>
 =item B<L<operators|#operator-methods>>:   MM,  ?,  ~,  |,  @,  %,  +,  -,  *,  **,  dot,  ⋅,  ÷,  X*,  ⊗,  ==,  ~~,  ❘ ❘,  ‖ ‖,  [ ]
 
-
-
 =head2 L<Constructors|#methods>
 
 Methods that create a new Math::Matrix object. The default is of course .new, which can take array of array of values (fastest) or one string.
@@ -82,43 +73,52 @@ Each second level array represents a row in the matrix.
 That is why their length has to be the same.
 Empty rows or columns we not be accepted.
 
-   say Math::Matrix.new( [[1,2],[3,4]] ) :
+=begin code :lang<raku>
 
-   1 2
-   3 4
+say Math::Matrix.new( [[1,2],[3,4]] ) :
+1 2
+3 4
 
-   Math::Matrix.new([<1 2>,<3 4>]); # does the same, WARNING: doesn't work with complex numbers
-   Math::Matrix.new( [[1]] );       # one element 1*1 matrix (exception where you don't have to mind comma)
-   Math::Matrix.new( [[1,2,3],] );  # one row 1*3 matrix, mind the trailing comma
-   Math::Matrix.new( [$[1,2,3]] );  # does the same, if you don't like trailing comma
-   Math::Matrix.new( [[1],[2]] );   # one column 2*1 matrix
+Math::Matrix.new([<1 2>,<3 4>]); # does the same, WARNING: doesn't work with complex numbers
+Math::Matrix.new( [[1]] );       # one element 1*1 matrix (exception where you don't have to mind comma)
+Math::Matrix.new( [[1,2,3],] );  # one row 1*3 matrix, mind the trailing comma
+Math::Matrix.new( [$[1,2,3]] );  # does the same, if you don't like trailing comma
+Math::Matrix.new( [[1],[2]] );   # one column 2*1 matrix
 
-   use Math::Matrix :MM;            # tag :ALL works too
-   MM [[1,2],[3,4]];                # shortcut
+use Math::Matrix :MM;            # tag :ALL works too
+MM [[1,2],[3,4]];                # shortcut
+
+=end code
 
 =head3 L<new( ((...),...,(...)) )|#constructors>
 
 Instead of square brackets you can use round ones too and use a list of lists as argument too.
 
-   say Math::Matrix.new( ((1,2),(3,4)) );
-   say MM ((1,2),(3,4)) :
+=begin code :lang<raku>
 
-   1 2
-   3 4
+say Math::Matrix.new( ((1,2),(3,4)) );
+say MM ((1,2),(3,4)) :
+1 2
+3 4
+
+=end code
 
 =head3 L<new( "..." )|#constructors>
 
 Alternatively you can define the matrix from a string, which makes most sense while using heredocs.
 
-   Math::Matrix.new("1 2 \n 3 4"); # our demo matrix as string
-   Math::Matrix.new: q:to/END/;    # indent as you wish
-       1 2
-       3 4
-     END
+=begin code :lang<raku>
 
-   use Math::Matrix :ALL;          #
-   MM '1';                         # 1 * 1 matrix, this case begs for a shortcut
+Math::Matrix.new("1 2 \n 3 4"); # our demo matrix as string
+Math::Matrix.new: q:to/END/;    # indent as you wish
+   1 2
+   3 4
+ END
 
+use Math::Matrix :ALL;          #
+MM '1';                         # 1 * 1 matrix, this case begs for a shortcut
+
+=end codd
 
 =head3 L<new-zero|#constructors>
 
@@ -129,16 +129,20 @@ I<new-zero> needs one ore two integer arguments. These are the numbers of rows a
 the size L<size|#size> of the new matrix. If both numbers are the same, you can omit the ladder
 and get a L<quadratic|#is-square> matrix filld with zeros.
 
-    say Math::Matrix.new-zero( 3, 4 ) :
+=begin code :lang<raku>
 
-    0 0 0 0
-    0 0 0 0
-    0 0 0 0
+say Math::Matrix.new-zero( 3, 4 ) :
 
-    say Math::Matrix.new-zero( 2 ) :
+0 0 0 0
+0 0 0 0
+0 0 0 0
 
-    0 0
-    0 0
+say Math::Matrix.new-zero( 2 ) :
+
+0 0
+0 0
+
+=end code
 
 =head3 L<new-identity|#constructors>
 
@@ -148,11 +152,15 @@ Since identity matrices have to be L<quadratic|#is-square>, I<new-identity>
 requires only one integer arguments, which sets the number of rows and columns of the
 new matrix.
 
-    say Math::Matrix.new-identity( 3 ) :
+=begin code :lang<raku>
 
-    1 0 0
-    0 1 0
-    0 0 1
+say Math::Matrix.new-identity( 3 ) :
+
+1 0 0
+0 1 0
+0 0 1
+
+=end code
 
 =head3 L<new-diagonal|#constructors>
 
@@ -161,11 +169,15 @@ which contains zeros, except in the main L<diagonal|#diagonal>, that can hold ar
 The only required argument is a list these arbitrary numbers,
 which will become the content of the main diagonal.
 
-    say Math::Matrix.new-diagonal( 2, 4, 5 ) :
+=begin code :lang<raku>
 
-    2 0 0
-    0 4 0
-    0 0 5
+say Math::Matrix.new-diagonal( 2, 4, 5 ) :
+
+2 0 0
+0 4 0
+0 0 5
+
+=end code
 
 =head3 L<new-vector-product|#constructors>
 
@@ -174,14 +186,16 @@ which are in a list or Array form the two required arguments of the method.
 Both lists don't have to be of the same size. The length of the first list will
 determine the amount of rows and the length of the second the amount of columns.
 
-    say Math::Matrix.new-vector-product([1,2,3],[2,3,4]) :
+=begin code :lang<raku>
 
-    *    2    3    4
-    1  1*2  1*3  1*4     2  3  4
-    2  2*2  2*3  2*4  =  4  6  8
-    3  3*2  3*3  3*4     6  9 12
+say Math::Matrix.new-vector-product([1,2,3],[2,3,4]) :
 
+*    2    3    4
+1  1*2  1*3  1*4     2  3  4
+2  2*2  2*3  2*4  =  4  6  8
+3  3*2  3*3  3*4     6  9 12
 
+=end code
 
 =head2 L<Accessors|#methods>
 
@@ -196,30 +210,45 @@ Gets value of one element in L<row|#row> (first parameter) and L<column|#column>
 Sometimes its called matrix cell, to distinct from other type of elements.
 See: L<elems|elems>, L<elem|elem>, L<element-type|#element-type>
 
-    my $matrix = Math::Matrix.new([[1,2],[3,4]]);
-    say $matrix.element(0,1)            : 2
-    say $matrix[0][1]                   # array syntax alias
+=begin code :lang<raku>
 
+my $matrix = Math::Matrix.new([[1,2],[3,4]]);
+say $matrix.element(0,1)            : 2
+say $matrix[0][1]                   # array syntax alias
+
+=end code
 
 =head3 L<AT-POS|#accessors>
 
 Gets row as array to enable direct postcircumfix syntax as shown in last example.
 
-     say $matrix.AT-POS(0)     : [1,2]
-     say $matrix[0]            # operator alias
-     say $matrix.Array[0]      # long alias with converter method Array
+=begin code :lang<raku>
+
+say $matrix.AT-POS(0)     : [1,2]
+say $matrix[0]            # operator alias
+say $matrix.Array[0]      # long alias with converter method Array
+
+=end code
 
 =head3 L<row|#accessors>
 
 returns the values of specified row (first required parameter) as a list.
 
-    say Math::Matrix.new([[1,2],[3,4]]).row(0) : (1, 2)
+=begin code :lang<raku>
+
+say Math::Matrix.new([[1,2],[3,4]]).row(0) : (1, 2)
+
+=end code
 
 =head3 L<column|#accessors>
 
 returns values of specified column (first required parameter) as a list.
 
-    say Math::Matrix.new([[1,2],[3,4]]).column(0) : (1, 3)
+=begin code :lang<raku>
+
+say Math::Matrix.new([[1,2],[3,4]]).column(0) : (1, 3)
+
+=end code
 
 =head3 L<diagonal|#accessors>
 
@@ -234,9 +263,13 @@ a negative value to access a parallel diagonal to the left and below the
 main diagonal. 0 is the default value.
 The matrix does not have to be a quadratic (L<square|#is-square>).
 
-    say Math::Matrix.new([[1,2],[3,4]]      ).diagonal    : (1, 4)
-    say Math::Matrix.new([[1,2],[3,4]]      ).diagonal(1) : (2)
-    say Math::Matrix.new([[1,2],[3,4],[5,6]]).diagonal(-1): (3, 6)
+=begin code :lang<raku>
+
+say Math::Matrix.new([[1,2],[3,4]]      ).diagonal    : (1, 4)
+say Math::Matrix.new([[1,2],[3,4]]      ).diagonal(1) : (2)
+say Math::Matrix.new([[1,2],[3,4],[5,6]]).diagonal(-1): (3, 6)
+
+=end code
 
 =head3 L<skew-diagonal|#accessors>
 
@@ -246,10 +279,14 @@ from left lower corner to the right upper (from $matrix[m][0] to $matrix[0][m]).
 Use the optional argument to get any other parallel skew diagonal.
 Positive value for the ones below - negative above.
 
-    say $matrix.skew-diagonal    : (2, 3)
-    say $matrix.skew-diagonal(0) : (2, 3)
-    say $matrix.skew-diagonal(-1) : (1)
-    say $matrix.skew-diagonal(1): (4)
+=begin code :lang<raku>
+
+say $matrix.skew-diagonal    : (2, 3)
+say $matrix.skew-diagonal(0) : (2, 3)
+say $matrix.skew-diagonal(-1) : (1)
+say $matrix.skew-diagonal(1): (4)
+
+=end code
 
 =head3 L<submatrix|#accessors>
 
@@ -260,19 +297,27 @@ understanding of the term and the third is a way to get almost any combination
 rows and columns you might wish for. To properly present these functions,
 we base the next examples upon this matrix:
 
-    say $m:    1 2 3 4
-               2 3 4 5
-               3 4 5 6
-               4 5 6 7
+=begin code :lang<raku>
+
+say $m:    1 2 3 4
+           2 3 4 5
+           3 4 5 6
+           4 5 6 7
+
+=end code
 
 =head4 L<leaving out one|#submatrix>
 
 In mathematics, a submatrix is built by leaving out one L<row|#row> and one L<column|#column>.
 In the two positional argument format you name these by their index ($row, $column).
 
-    say $m.submatrix(1,2) :    1 2 4
-                               3 4 6
-                               4 5 7
+=begin code :lang<raku>
+
+say $m.submatrix(1,2) :    1 2 4
+                           3 4 6
+                           4 5 7
+
+=end code
 
 =head4 L<leaving out more|#submatrix>
 
@@ -280,10 +325,14 @@ If you provide two ranges (row-min .. row-max, col-min .. col-max - both optiona
 to the appropriately named arguments, you get the excerpt of the matrix,
 that contains only the requested rows and columns - in the original order.
 
+=begin code :lang<raku>
+
 say $m.submatrix( rows => 1..1, columns => 1..2) :    3 4
 say $m.submatrix( rows => 1..1, columns => 2..*) :      4 5
 say $m.submatrix( rows => 1..2 )                 :  2 3 4 5
                                                     3 4 5 6
+
+=end code
 
 =head4 L<reordering|#submatrix>
 
@@ -292,38 +341,46 @@ as created my the sequence operator (...).
 The result will be a matrix with that selection of rows and columns.
 Please note, you may pick rows/columns in any order and as many times you prefer.
 
-    $m.submatrix(rows => (1,2), columns => (3,2)):    5 4
-                                                      6 5
+=begin code :lang<raku>
 
-    $m.submatrix(rows => (1...2), columns => (3,2))  # same thing
+$m.submatrix(rows => (1,2), columns => (3,2)):    5 4
+                                                  6 5
+
+$m.submatrix(rows => (1...2), columns => (3,2))  # same thing
+
+=end code
 
 Arguments with ranges and lists can be mixed and are in both cases optional.
 If you provide none of them, the result will be the original matrix.
 
+=begin code :lang<raku>
 
-    say $m.submatrix( rows => (1,) )              :   3 4 5
+say $m.submatrix( rows => (1,) )              :   3 4 5
 
-    $m.submatrix(rows => (1..*), columns => (3,2)):   5 4
+$m.submatrix(rows => (1..*), columns => (3,2)):   5 4
                                                       6 5
+=end code
 
 Even more powerful or explicit in syntax are the L<structural ops|#structural-operations>.
-
-
 
 =head2 L<Converter|#methods>
 
 Methods that convert a matrix into other types: L<Bool|#bool>, L<Str|#str>, L<Numeric|#numeric>,
 L<Range|#range>, L<Array|#array>, L<Hash|#hash>, L<list|#list>, L<list-rows|#list-rows>, L<list-columns|#list-columns>
-or allow different views on the overall content (output formats): L<gist|#gist>, L<perl|#perl>.
+or allow different views on the overall content (output formats): L<gist|#gist>, L<raku|#raku>.
 
 =head3 L<Bool|#converter>
 
 Conversion into Bool context. Returns False if matrix is zero
 (all elements equal zero as in L<is-zero|#is-zero>), otherwise True.
 
-    $matrix.Bool
-    ? $matrix           # alias op
-    if $matrix          # matrix in Bool context too
+=begin code :lang<raku>
+
+$matrix.Bool
+? $matrix           # alias op
+if $matrix          # matrix in Bool context too
+
+=end code
 
 =head3 L<Str|#converter>
 
@@ -331,12 +388,16 @@ Returns values of all L<element|#element>s, separated by one whitespace, rows by
 This is the same format as expected by L<new("")|#new---2>.
 Str is called implicitly by put and print. A shortened version is provided by L<gist|#gist>
 
-    say Math::Matrix.new([[1,2],[3,4]]).Str:
+=begin code :lang<raku>
 
-    1 2                 # meaning: "1 2\n3 4"
-    3 4
+say Math::Matrix.new([[1,2],[3,4]]).Str:
 
-    ~$matrix            # alias op
+1 2                 # meaning: "1 2\n3 4"
+3 4
+
+~$matrix            # alias op
+
+=end code
 
 =head3 L<Numeric|#converter>
 
@@ -344,57 +405,88 @@ Conversion into Numeric context. Returns Euclidean L<norm|#norm>.
 Please note, only a prefix operator + (as in: + $matrix) will call this Method.
 An infix (as in $matrix + $number) calls $matrix.add($number).
 
-    $matrix.Numeric
-    + $matrix           # alias op
+=begin code :lang<raku>
+
+$matrix.Numeric
++ $matrix           # alias op
+
+=end code
 
 =head3 L<Range|#converter>
 
 Returns an range object that reflects the content of all L<element|#element>s.
 Please note that complex number can not be endpoints of ranges.
 
-    say $matrix.Range: 1..4
+=begin code :lang<raku>
+
+say $matrix.Range: 1..4
+
+=end code
 
 To get single endpoints you could write:
 
-    say $matrix.Range.min: 1
-    say $matrix.list.max:  4
+=begin code :lang<raku>
+
+say $matrix.Range.min: 1
+say $matrix.list.max:  4
+
+=end code
 
 =head3 L<Array|#converter>
 
 Content of all L<element|#element>s as an array of arrays (same format that was put into L<new([...])|#new-->).
 
-    say Math::Matrix.new([[1,2],[3,4]]).Array : [[1 2] [3 4]]
-    say @ $matrix       # alias op, space between @ and $ needed
+=begin code :lang<raku>
+
+say Math::Matrix.new([[1,2],[3,4]]).Array : [[1 2] [3 4]]
+say @ $matrix       # alias op, space between @ and $ needed
+
+=end code
 
 =head3 L<list|#converter>
 
 Returns a flat list with all L<element|#element>s (same as .list-rows.flat.list).
 
-    say $matrix.list    : (1 2 3 4)
-    say |$matrix        # alias op
+=begin code :lang<raku>
 
+say $matrix.list    : (1 2 3 4)
+say |$matrix        # alias op
+
+=end code
 
 =head3 L<list-rows|#converter>
 
 Returns a list of lists, reflecting the row-wise content of the matrix.
 Same format as L<new ()|#new---1> takes in.
 
-    say Math::Matrix.new( [[1,2],[3,4]] ).list-rows      : ((1 2) (3 4))
-    say Math::Matrix.new( [[1,2],[3,4]] ).list-rows.flat : (1 2 3 4)
+=begin code :lang<raku>
+
+say Math::Matrix.new( [[1,2],[3,4]] ).list-rows      : ((1 2) (3 4))
+say Math::Matrix.new( [[1,2],[3,4]] ).list-rows.flat : (1 2 3 4)
+
+=end code
 
 =head3 L<list-columns|#converter>
 
 Returns a list of lists, reflecting the row-wise content of the matrix.
 
-    say Math::Matrix.new( [[1,2],[3,4]] ).list-columns : ((1 3) (2 4))
-    say Math::Matrix.new( [[1,2],[3,4]] ).list-columns.flat : (1 3 2 4)
+=begin code :lang<raku>
+
+say Math::Matrix.new( [[1,2],[3,4]] ).list-columns : ((1 3) (2 4))
+say Math::Matrix.new( [[1,2],[3,4]] ).list-columns.flat : (1 3 2 4)
+
+=end code
 
 =head3 L<Hash|#converter>
 
 Gets you a nested key - value hash.
 
-    say $matrix.Hash : { 0 => { 0 => 1, 1 => 2}, 1 => {0 => 3, 1 => 4} }
-    say % $matrix       # alias op, space between % and $ still needed
+=begin code :lang<raku>
+
+say $matrix.Hash : { 0 => { 0 => 1, 1 => 2}, 1 => {0 => 3, 1 => 4} }
+say % $matrix       # alias op, space between % and $ still needed
+
+=end code
 
 =head3 L<gist|#converter>
 
@@ -404,30 +496,40 @@ If you call it explicitly, you can add width and height (char count) as optional
 Might even not show all decimals. Several dots will hint that something is missing.
 It is implicitly called by say. For a full view use L<Str|#str>.
 
-    say $matrix;      # output of a matrix with more than 100 elements
+=begin code :lang<raku>
 
-    1 2 3 4 5 ..
-    3 4 5 6 7 ..
-    ...
+say $matrix;      # output of a matrix with more than 100 elements
 
-    say $matrix.gist(max-chars => 100, max-rows => 5 );
+1 2 3 4 5 ..
+3 4 5 6 7 ..
+...
+
+say $matrix.gist(max-chars => 100, max-rows => 5 );
+
+=end code
 
 max-chars is the maximum amount of characters in any L<row|#row> of output (default is 80).
 max-rows is the maximum amount of rows gist will put out (default is 20).
 After gist ist called once (with or without arguments) the output will be cached.
 So next time you call:
 
-    say $matrix       # 100 x 5 is still the max
+=begin code :lang<raku>
+
+say $matrix       # 100 x 5 is still the max
+
+=end code
 
 You change the cache by calling gist with arguments again.
 
-=head3 L<perl|#converter>
+=head3 L<raku|#converter>
 
 Conversion into String that can reevaluated into the same object later using default constructor.
 
-    my $clone = eval $matrix.perl;       # same as: $matrix.clone
+=begin code :lang<raku>
 
+my $clone = $matrix.raku.EVAL;       # same as: $matrix.clone
 
+=end code
 
 =head2 L<Boolean Properties|#methods>
 
@@ -454,8 +556,12 @@ L<Density|#density> of zero matrices is 0.
 This matrix behaves like a zero element regarding to the L<dot-product|#dot-product>.
 Every matrix multiplied with a zero matrix is a zero matrix (A * 0 = 0 * A = 0).
 
-    Example:    0 0 0
-                0 0 0
+=begin output
+
+Example:    0 0 0
+            0 0 0
+
+=end output
 
 =head3 L<is-identity|#boolean-properties>
 
@@ -466,9 +572,13 @@ It is the neutral element in redgards to the L<dot-product|#dot-product>. Every 
 multiplied with a fitting identiy matrix results in the same matrix again (A * I = I * A = A).
 Every identity matrix has to be a square.
 
-    Example:    1 0 0
-                0 1 0
-                0 0 1
+=begin output
+
+Example:    1 0 0
+            0 1 0
+            0 0 1
+
+=end output
 
 =head3 L<is-square|#boolean-properties>
 
@@ -493,12 +603,16 @@ L<Identity|#is-identity> matrices are I<:upper>, I<:lower> and I<:unit>.
 a.k.a I<right triangular matrix>: all L<element|#element>s left-below the main I<diagonal> are zero.
 In other words: the L<lower-bandwith|#lower-bandwith> has to be zero.
 
-    $tri-matrix.is-triangular(:upper);       # matrix in the example below would pass this test
-    $tri-matrix.is-triangular();             # True, there is a lower or upper triangle
+=begin code :lang<raku>
 
-    Example:    1 2 5
-                0 3 8
-                0 0 7
+$tri-matrix.is-triangular(:upper); # matrix in the example below would pass this test
+$tri-matrix.is-triangular();       # True, there is a lower or upper triangle
+
+Example:    1 2 5
+            0 3 8
+            0 0 7
+
+=end code
 
 =head4 L<lower triangular|#is-triangular>
 
@@ -506,94 +620,125 @@ a.k.a I<left triangular> matrix: every L<element|#element> right and above the L
 (where L<row|#row> index is greater than L<column|#column> index) are zero.
 In other words: the L<upper-bandwith|#upper-bandwith> has to be zero.
 
-    $tri-matrix.is-triangular(:lower);        # matrix in the example below would pass this test
-    $tri-matrix.is-triangular();              # True too
-    $tri-matrix.is-triangular(:!upper);       # True, because the is a triangle, but not an upper
-    $tri-matrix.is-triangular(:lower,:!upper);# True still, even a bit redundant
+=begin code :lang<raku>
 
-    Example:    1 0 0
-                2 3 0
-                5 8 7
+$tri-matrix.is-triangular(:lower);        # matrix in the example below would pass this test
+$tri-matrix.is-triangular();              # True too
+$tri-matrix.is-triangular(:!upper);       # True, because the is a triangle, but not an upper
+$tri-matrix.is-triangular(:lower,:!upper);# True still, even a bit redundant
+
+Example:    1 0 0
+            2 3 0
+            5 8 7
+
+=end code
 
 =head4 L<strict triangular|#is-triangular>
 
 are I<triangular> matrices, that have a L<diagonal|#diagonal> consisting only of values equal zero.
 
-    $tri-matrix.is-triangular(:strict);       # matrix in the example below would pass this test
-    $tri-matrix.is-triangular(:!unit, :lower);# True too
+=begin code :lang<raku>
 
-    Example:    0 0 0
-                5 0 0
-                0 6 0
+$tri-matrix.is-triangular(:strict);       # matrix in the example below would pass this test
+$tri-matrix.is-triangular(:!unit, :lower);# True too
+
+Example:    0 0 0
+            5 0 0
+            0 6 0
+
+=end code
 
 =head4 L<unit triangular|#is-triangular>
 
 a.k.a I<unitriangular> matrices have a L<diagonal|#diagonal> consisting only of values equal one.
 An L<identity|#is-identity> matrix is I<:unit>, I<:upper> and I<:lower>.
 
-    $tri-matrix.is-triangular(:unit);         # matrix in the example below would pass this test
-    $tri-matrix.is-triangular(:unit, :lower); # False, because unit upper triangular
+=begin code :lang<raku>
 
-    Example:    1 2 5
-                0 1 8
-                0 0 1
+$tri-matrix.is-triangular(:unit);         # matrix in the example below would pass this test
+$tri-matrix.is-triangular(:unit, :lower); # False, because unit upper triangular
+
+Example:    1 2 5
+            0 1 8
+            0 0 1
+
+=end code
 
 =head4 L<atomic triangular|#boolean-properties>
 
 a.k.a I<Frobenius> matrix is a unit triangular matrix with one column of 'none zero values.
 
-    $tri-matrix.is-triangular(:atomic);        # matrix in the example below would pass this test
+=begin code :lang<raku>
 
-    Example:    1 0 0 0
-                0 1 0 0
-                0 2 1 0
-                0 5 0 1
+$tri-matrix.is-triangular(:atomic);        # matrix in the example below would pass this test
+
+Example:    1 0 0 0
+            0 1 0 0
+            0 2 1 0
+            0 5 0 1
+
+=end code
 
 =head3 L<is-diagonal|#boolean-properties>
 
 L<square|#is-square> matrix, where only elements on the main L<diagonal|#diagonal> differ from 0
 (as created by L<new-diagonal|#new-diagonal>).
 
-    $tri-matrix.is-diagonal();
-    $tri-matrix.is-triangular(:upper, :lower); # same thing
-    $tri-matrix.lower-bandwith() == $tri-matrix.upper-bandwith() == 0; # True
+=begin code :lang<raku>
 
-    Example:    1 0 0
-                0 5 0
-                0 0 9
+$tri-matrix.is-diagonal();
+$tri-matrix.is-triangular(:upper, :lower); # same thing
+$tri-matrix.lower-bandwith() == $tri-matrix.upper-bandwith() == 0; # True
+
+Example:    1 0 0
+            0 5 0
+            0 0 9
+
+=end code
 
 =head3 L<is-anti-diagonal|#boolean-properties>
 
 L<square|#is-square> matrix, where only elements on the main L<skew-diagonal|#skew-diagonal> differ from 0.
 
-    $tri-matrix.is-anti-diagonal();
+=begin code :lang<raku>
 
-    Example:    0 0 3
-                0 5 0
-                7 0 0
+$tri-matrix.is-anti-diagonal();
+
+Example:    0 0 3
+            0 5 0
+            7 0 0
+
+=end code
 
 =head3 L<is-tridiagonal|#boolean-properties>
 
 L<square|#is-square> matrix, where only elements on the main L<diagonal|#diagonal>
 and their direct parallels differ from 0.
 
-    $tri-matrix.is-tridiagonal();
-    $tri-matrix.lower-bandwith() < 2 and $tri-matrix.upper-bandwith() < 2; # True
+=begin code :lang<raku>
 
-    Example:    1 2 0 0
-                3 4 5 0
-                0 6 7 8
-                0 0 9 1
+$tri-matrix.is-tridiagonal();
+$tri-matrix.lower-bandwith() < 2 and $tri-matrix.upper-bandwith() < 2; # True
 
+Example:    1 2 0 0
+            3 4 5 0
+            0 6 7 8
+            0 0 9 1
+
+=end code
 
 =head3 L<is-diagonal-constant|#boolean-properties>
 
 a.k.a. or I<Töplitz> matrix is a matrix where every L<diagonal|#diagonal>
 is the a collection of L<element|#element>s that hold the same value.
 
+=begin output
+
     Example:     0  1  2
                 -1  0  1
                 -2 -1  0
+
+=end output
 
 =head3 L<is-catalecticant|#boolean-properties>
 
@@ -601,35 +746,50 @@ a.k.a I<Hankel> matrix is a L<square|#is-square> matrix, where every L<skew-diag
 is the a collection of L<element|#element>s that hold the same value.
 I<Catalecticant> matrices are L<symmetric|#is-symmetric>.
 
-    Example:     0  1  2
-                 1  2  3
-                 2  3  4
+=begin output
+
+Example:     0  1  2
+             1  2  3
+             2  3  4
+
+=end output
 
 =head3 L<is-symmetric|#boolean-properties>
 
 True if every L<element|#element> with coordinates x y has same value as the element on y x.
 In other words: $matrix and $matrix.L<transposed|#transposed> (alias T) are the same.
 
-    Example:    1 2 3
-                2 5 4
-                3 4 7
+=begin output
+
+Example:    1 2 3
+            2 5 4
+            3 4 7
+
+=end output
 
 =head3 L<is-antisymmetric|#boolean-properties>
 
 Means the L<transposed|#transposed> and L<negated|#negated> matrix are the same.
 
-    Example:    0  2  3
-               -2  0  4
-               -3 -4  0
+=begin output
 
+Example:    0  2  3
+           -2  0  4
+           -3 -4  0
+
+=end output
 
 =head3 L<is-self-adjoint|#boolean-properties>
 
 A Hermitian or self-adjoint matrix is L<equal|#equal> to its L<transposed|#transposed> and complex L<conjugated|#conjugated>.
 
-    Example:    1   2   3+i
-                2   5   4
-                3-i 4   7
+=begin output
+
+Example:    1   2   3+i
+            2   5   4
+            3-i 4   7
+
+=end output
 
 =head3 L<is-invertible|#boolean-properties>
 
@@ -654,13 +814,16 @@ the concjugate transposed matrix equals the L<inverted|#inverted> matrix.
 True when L<element|#element>s on the L<diagonal|#diagonal> have a bigger (if strict) or at least equal (in none strict)
 absolute value than the sum of its row (sum of absolute values of the row except diagonal element).
 
-   if $matrix.is-diagonally-dominant {
-   $matrix.is-diagonally-dominant(:!strict)      # same thing (default)
-   $matrix.is-diagonally-dominant(:strict)       # diagonal elements (DE) are stricly greater (>)
-   $matrix.is-diagonally-dominant(:!strict, :along<column>) # default
-   $matrix.is-diagonally-dominant(:strict,  :along<row>)    # DE > sum of rest row
-   $matrix.is-diagonally-dominant(:!strict, :along<both>)   # DE >= sum of rest row and rest column
+=begin code :lang<raku>
 
+if $matrix.is-diagonally-dominant {
+$matrix.is-diagonally-dominant(:!strict)      # same thing (default)
+$matrix.is-diagonally-dominant(:strict)       # diagonal elements (DE) are stricly greater (>)
+$matrix.is-diagonally-dominant(:!strict, :along<column>) # default
+$matrix.is-diagonally-dominant(:strict,  :along<row>)    # DE > sum of rest row
+$matrix.is-diagonally-dominant(:!strict, :along<both>)   # DE >= sum of rest row and rest column
+
+=end code
 
 =head3 L<is-positive-definite|#boolean-properties>
 
@@ -669,7 +832,6 @@ True if all main L<minors|#minor> or all Eigenvalues are strictly greater zero.
 =head3 L<is-positive-semidefinite|#boolean-properties>
 
 True if all main L<minors|#minor> or all Eigenvalues are greater equal zero.
-
 
 =head2 L<Numeric Properties|#methods>
 
@@ -683,14 +845,22 @@ L<determinant|#determinant>, L<minor|#minor>, L<norm|#norm>, L<condition|#condit
 
 List of two values: number of rows and number of columns.
 
-    say $matrix.size();
-    my $dim = min $matrix.size;
+=begin code :lang<raku>
+
+say $matrix.size();
+my $dim = min $matrix.size;
+
+=end code
 
 =head3 L<density|#numeric-properties>
 
 I<Density> is the percentage of L<element|#element>s which are not zero. I<sparsity> = 1 - I<density>.
 
-    my $d = $matrix.density;
+=begin code :lang<raku>
+
+my $d = $matrix.density;
+
+=end code
 
 =head3 L<bandwith|#numeric-properties>
 
@@ -698,7 +868,11 @@ Is roughly the greatest distance of a none zero value from the main L<diagonal|#
 A matrix that L<is-diagonal|#is-diagonal> has a bandwith of 0. If there is a none zero
 value on an diagonal above or below the main diagonal, tha bandwith would be one.
 
-    my $bw = $matrix.bandwith;
+=begin code :lang<raku>
+
+my $bw = $matrix.bandwith;
+
+=end code
 
 =head4 L<lower-bandwith|#bandwith>
 
@@ -709,34 +883,48 @@ below the main diagonal, that contain none zero values.
 =head4 L<upper-bandwith|#bandwith>
 
 Analogously, every L<element|#element> with m + k < n is zero if matrix has an upper bandwith of k.
+=begin output
 
-    Example:    1  0  0
-                4  2  0
-                0  5  3
+Example:    1  0  0
+            4  2  0
+            0  5  3
+
+=end output
 
 The I<bidiagonal> example matrix has an upper bandwith of zero and lower bandwith of one, so the overall bandwith is one.
-
 
 =head3 L<trace|#numeric-properties>
 
 The trace of a L<square|#is-square> matrix is the sum of the L<element|#element>s on the main diagonal.
 In other words: sum of elements which row and column value is identical.
 
-    my $tr = $matrix.trace;
+=begin code :lang<raku>
+
+my $tr = $matrix.trace;
+
+=end code
 
 =head3 L<rank|#numeric-properties>
 
 Rank is the number of independent row or column vectors or also called independent
 dimensions (thats why this command is sometimes calles dim)
 
-    my $r = $matrix.rank;
+=begin code :lang<raku>
+
+my $r = $matrix.rank;
+
+=end code
 
 =head3 L<nullity|#numeric-properties>
 
 Nullity of a matrix is the number of dependent rows or columns (rank + nullity = dim).
 Or number of dimensions of the kernel (vector space mapped by the matrix into zero).
 
-    my $n = $matrix.nullity;
+=begin code :lang<raku>
+
+my $n = $matrix.nullity;
+
+=end code
 
 =head3 L<determinant|#numeric-properties>
 
@@ -745,17 +933,24 @@ which tells the volume, spanned by the row or column vectors.
 So if the volume is just in one dimension flat, the determinant is zero,
 and has a kernel (not a full L<rank|#rank> - thus is not L<invertible|#is-invertable>).
 
-    my $det = $matrix.determinant;
-    my $d = $matrix.det;                # same thing
-    my $d = ❘ $matrix ❘;                # unicode operator shortcut
+=begin code :lang<raku>
+
+my $det = $matrix.determinant;
+my $d = $matrix.det;                # same thing
+my $d = ❘ $matrix ❘;                # unicode operator shortcut
+
+=end code
 
 =head3 L<minor|#numeric-properties>
 
 A Minor is the determinant of a L<submatrix|#leaving-out-one> (first variant with same 2 scalar arguments a minor method).
 The two required positional arguments are row and column indices of an existing L<element|#element>.
 
+=begin code :lang<raku>
 
-    my $m = $matrix.minor(1,2);
+my $m = $matrix.minor(1,2);
+
+=end code
 
 =head3 L<norm|#numeric-properties>
 
@@ -766,23 +961,31 @@ The sum of these results is taken to the power of 1/p.
 The p-q-Norm extents this process. In his step 2 every column-sum is taken to the power of (p/q).
 In step 3 the sum of these are taken to the power of (1/q).
 
-    my $norm = $matrix.norm( );           # euclidian norm aka L2 (p = 2, q = 2)
-    my $norm = + $matrix;                 # context op shortcut
-    my $norm = ‖ $matrix ‖;               # unicode op shortcut
-    my $norm = $matrix.norm(1);           # p-norm aka L1 = sum of all elements absolute values (p = 1, q = 1)
-    my $norm = $matrix.norm(p:<4>,q:<3>); # p,q - norm, p = 4, q = 3
-    my $norm = $matrix.norm(p:<2>,q:<2>); # L2 aka Euclidean aka Frobenius norm
-    my $norm = $matrix.norm('euclidean'); # same thing, more expressive to some
-    my $norm = $matrix.norm('frobenius'); # same thing, more expressive to some
-    my $norm = $matrix.norm('max');       # maximum norm - biggest absolute value of a element
-    $matrix.norm('row-sum');              # row sum norm - biggest abs. value-sum of a row
-    $matrix.norm('column-sum');           # column sum norm - same column wise
+=begin code :lang<raku>
+
+my $norm = $matrix.norm( );           # euclidian norm aka L2 (p = 2, q = 2)
+my $norm = + $matrix;                 # context op shortcut
+my $norm = ‖ $matrix ‖;               # unicode op shortcut
+my $norm = $matrix.norm(1);           # p-norm aka L1 = sum of all elements absolute values (p = 1, q = 1)
+my $norm = $matrix.norm(p:<4>,q:<3>); # p,q - norm, p = 4, q = 3
+my $norm = $matrix.norm(p:<2>,q:<2>); # L2 aka Euclidean aka Frobenius norm
+my $norm = $matrix.norm('euclidean'); # same thing, more expressive to some
+my $norm = $matrix.norm('frobenius'); # same thing, more expressive to some
+my $norm = $matrix.norm('max');       # maximum norm - biggest absolute value of a element
+$matrix.norm('row-sum');              # row sum norm - biggest abs. value-sum of a row
+$matrix.norm('column-sum');           # column sum norm - same column wise
+
+=end code
 
 =head3 L<condition|#numeric-properties>
 
 Condition number of a matrix is L2 norm * L2 of L<inverted|#inverted> matrix.
 
-    my $c = $matrix.condition( );
+=begin code :lang<raku>
+
+my $c = $matrix.condition( );
+
+=end code
 
 =head3 L<element-type|#numeric-properties>
 
@@ -796,14 +999,19 @@ The widest type of any element will returned as type object.
 In the next example the smartmatch returns true, because no element of our default example matrix has wider type
 than (Int). After such a test all elements can be safely treated as Int or Bool.
 
-    if $matrix.widest-element-type ~~ Int { ...
+=begin code :lang<raku>
+
+if $matrix.widest-element-type ~~ Int { ...
+
+=end code
 
 You can also check if all elements have the same type:
 
-    if $matrix.widest-element-type eqv $matrix.narrowest-element-type
+=begin code :lang<raku>
 
+if $matrix.widest-element-type eqv $matrix.narrowest-element-type
 
-
+=end code
 
 =head2 L<Derived Matrices|#methods>
 
@@ -816,48 +1024,63 @@ L<inverted|#inverted>, L<reduced-row-echelon-form|#reduced-row-echelon-form>
 
 Returns a new, transposed Matrix, where rows became colums and vice versa.
 
-    Math::Matrix.new([[1,2,3],[3,4,6]]).transposed :
+=begin code :lang<raku>
 
-    [[1 2 3]     = [[1 4]
-     [4 5 6]].T     [2 5]
-                    [3 6]]
+Math::Matrix.new([[1,2,3],[3,4,6]]).transposed :
 
-    Math::Matrix.new([[1,2,3],[3,4,6]]).T # same but shorter
+[[1 2 3]     = [[1 4]
+ [4 5 6]].T     [2 5]
+                [3 6]]
+
+Math::Matrix.new([[1,2,3],[3,4,6]]).T # same but shorter
+
+=end code
 
 =head3 L<negated|#derived-matrices>
 
 Creates a matrix where every L<element|#element> has the negated value of the original (invertion of sign).
 
-    my $new = $matrix.negated();     # invert sign of all elements
-    my $neg = - $matrix;             # operator alias
+=begin code :lang<raku>
 
-    say $neg:  -1 -2
-               -3 -4
+my $new = $matrix.negated();     # invert sign of all elements
+my $neg = - $matrix;             # operator alias
+
+say $neg:  -1 -2
+           -3 -4
+
+=end code
 
 =head3 L<conjugated|#derived-matrices>
 
 Creates a matrix where every L<element|#element> is the complex conjugated of the original.
 
-    my $c = $matrix.conjugated();    # change every value to its complex conjugated
-    my $c = $matrix.conj();          # short alias (official Perl 6 shortcut for conjugation of numbers)
+=begin code :lang<raku>
 
-    say Math::Matrix.new([[1+i,2],[3,4-i]]).conj :
+my $c = $matrix.conjugated();    # change every value to its complex conjugated
+my $c = $matrix.conj();          # short alias (official Raku shortcut for conjugation of numbers)
 
-    1-1i  2
-    3     4+1i
+say Math::Matrix.new([[1+i,2],[3,4-i]]).conj :
 
-    my $ct = $matrix.H;              # conjugated and transposed matrix (Hermitian transpose)
+1-1i  2
+3     4+1i
 
+my $ct = $matrix.H;              # conjugated and transposed matrix (Hermitian transpose)
+
+=end code
 
 =head3 L<adjugated|#derived-matrices>
 
 Creates a matrix out of the properly signed L<minors|#minor> of the original.
 It is called adjugate, classical adjoint or sometimes adjunct.
 
-    $matrix.adjugated.say :
+=begin code :lang<raku>
 
-     4 -3
-    -2  1
+$matrix.adjugated.say :
+
+ 4 -3
+-2  1
+
+=end code
 
 =head3 L<inverted|#derived-matrices>
 
@@ -866,23 +1089,28 @@ Inverse matrix regarding to matrix multiplication (see L<dot-product|#dot-produc
 The dot product of a matrix with it's inverted results in a L<identity|#is-identity> matrix
 (neutral element in this group).
 
-    my $i = $matrix.inverted();      # invert matrix
-    my $i = $matrix ** -1;           # operator alias
+=begin code :lang<raku>
 
-    say $i:
+my $i = $matrix.inverted();      # invert matrix
+my $i = $matrix ** -1;           # operator alias
 
-     -2    1
-    1.5 -0.5
+say $i:
+
+ -2    1
+1.5 -0.5
+
+=end code
 
 =head3 L<reduced-row-echelon-form|#derived-matrices>
 
 Return the reduced row echelon form of a matrix, a.k.a. row canonical form
 
-    my $rref = $matrix.reduced-row-echelon-form();
-    my $rref = $matrix.rref();       # short alias
+=begin code :lang<raku>
 
+my $rref = $matrix.reduced-row-echelon-form();
+my $rref = $matrix.rref();       # short alias
 
-
+=end code
 
 =head2 L<Decompositions|#methods>
 
@@ -902,10 +1130,14 @@ Decompose an L<invertible|#is-invertible>, matrix into a L<lower triangular|#is-
 and an L<upper triangular matrix|#is-upper-triangular> (called U).
 The algorithm works along the lines of what is called Gaussian elimination.
 
+=begin code :lang<raku>
+
 my ($L, $U) = $matrix.LU-decomposition();
 $L dot $U eq $matrix;                # True
 $U.is-triangular(:upper);             # True
 $L.is-triangular(:lower, :unit);       # True
+
+=end code
 
 =head4 L<LU-Crout-decomposition|#decompositions>
 
@@ -914,21 +1146,29 @@ the L<diagonal|#diagonal> elements of L are all equal 1 and the diagonal element
 might differ from 1. If you prefer this to be the other way around, use the optional,
 boolean parameter I<:Crout>.
 
+=begin code :lang<raku>
+
 my ($L, $U) = $matrix.LU-decomposition(:Crout);
 $L dot $U eq $matrix;                # True
 $L.is-triangular(:lower);             # True
 $U.is-triangular(:upper, :unit);       # True
+
+=end code
 
 =head4 L<LDU-decomposition|#decompositions>
 
 If you want the diagonal elements separated into its own matrix, use the optional, boolean
 parameter I<:diagonal>. Note that you can not use this and I<:Crout> at once.
 
+=begin code :lang<raku>
+
 my ($L, $D, $U) = $matrix.LU-decomposition( :diagonal);
 $L dot $D dot $U eq $matrix;         # True
 $L.is-triangular(:lower, :unit);      # True
 $U.is-triangular(:upper, :unit);       # True
 $D.is-diagonal();                       # True
+
+=end code
 
 =head4 L<LUP-decomposition|#decompositions>
 
@@ -938,8 +1178,12 @@ a decomposition. That is why the matrix no longer has to be L<invertible|#is-inv
 but only L<square|#is-square> to run a LU decomposition with permutation.
 This option might be combined with I<:Crout> or I<:diagonal>, but not both.
 
-    my ($L, $U, $P) = $matrix.LU-decomposition( :pivot );
-    $L dot $U eq $matrix dot $P;         # True
+=begin code :lang<raku>
+
+my ($L, $U, $P) = $matrix.LU-decomposition( :pivot );
+$L dot $U eq $matrix dot $P;         # True
+
+=end code
 
 =head3 L<Cholesky-decomposition|#decompositions>
 
@@ -949,9 +1193,13 @@ The result will be an L<orthogonal|#is-orthogonal>,
 L<lower triangular matrix|#is-lower-triangular> matrix (here called G)
 that multiplied with its L<transposed|#transposed> gives you the original matrix.
 
-    my $G = $matrix.Cholesky-decomposition( );          # $G is a left triangular matrix
-    my $G = $matrix.Cholesky-decomposition(:!diagonal); # same as before
-    $G dot $G.T == $matrix;                             # True
+=begin code :lang<raku>
+
+my $G = $matrix.Cholesky-decomposition( );          # $G is a left triangular matrix
+my $G = $matrix.Cholesky-decomposition(:!diagonal); # same as before
+$G dot $G.T == $matrix;                             # True
+
+=end code
 
 =head4 L<LDL-decomposition|#decompositions>
 
@@ -962,10 +1210,12 @@ containing the values formerly on the diagonal of G, but squared.
 This output format is also known as I<LDL decomposition>.
 You get the second L matrix easily by transposing the L you got.
 
-    my ($L, $D) = $matrix.Cholesky-decomposition(:diagonal);
-    $L dot $D dot $L.T == $matrix;                      # True
+=begin code :lang<raku>
 
+my ($L, $D) = $matrix.Cholesky-decomposition(:diagonal);
+$L dot $D dot $L.T == $matrix;                      # True
 
+=end code
 
 =head2 L<Mathematical Operations|#methods>
 
@@ -975,23 +1225,24 @@ The operands will not be changed but a the result matrix will be returned.
 L<equal|#equal>, B<L<add|#add>>: (L<matrix|#add-matrix>, L<vector|#add-vector>, L<scalar|#add-scalar>),
 B<L<multiply|#multiply>>: (L<matrix|#multiply-matrix>, L<vector|#multiply-vector>, L<scalar|#multiply-scalar>), L<dot-product|#dot-product>, L<tensor-product|#tensor-product>.
 
-
 =head3 L<equal|#mathematical-operations>
 
 Checks two matrices for equality. They have to be of same L<size|#size> and every L<element|#element>
 of the first matrix on a particular position has to be numerically equal (as checked by I<==>) to the element
 (on the same position) of the second matrix.
 
-    if $matrixa.equal( $matrixb ) {   # method variant
-    if $matrixa == $matrixb {         # operator alias
-    if $matrixa ~~ $matrixb {         # smart match redirects to ==
+=begin code :lang<raku>
 
+if $matrixa.equal( $matrixb ) {   # method variant
+if $matrixa == $matrixb {         # operator alias
+if $matrixa ~~ $matrixb {         # smart match redirects to ==
+
+=end code
 
 =head3 L<add|#mathematical-operations>
 
 Adding a matrix, L<vector|#add-vector> or L<scalar|#scalar-scalar>.
 Named arguments I<:row> and I<:column> are only used to add a vector (one) or scalar (both).
-
 
 =head4 L<add matrix|#add>
 
@@ -999,27 +1250,35 @@ When adding two matrices, they have to be of the same L<size|#size>.
 Instead of a Math::Matrix object you can also provide the content of a matrix as
 L<new []|#new-->, L<new ()|#new---1> or L<new ""|#new---2> would accept it.
 
-    $matrix.add( $matrix2 );
-    $matrix.add( [[2,3],[4,5]] ); # data alias
-    $matrix + $matrix2            # operator alias
+=begin code :lang<raku>
 
-    Example:    1 2  +  2 3  =  3 5
-                3 4     4 5     7 9
+$matrix.add( $matrix2 );
+$matrix.add( [[2,3],[4,5]] ); # data alias
+$matrix + $matrix2            # operator alias
+
+Example:    1 2  +  2 3  =  3 5
+            3 4     4 5     7 9
+
+=end code
 
 =head4 L<add vector|#add>
 
 To add a vector you have to specify to which row or column it should be added.
 The other argument is a list or array (which have to fit the row or column size).
 
-    $matrix.add( row => 1, [2,3] );
+=begin code :lang<raku>
 
-    Example:    1 2  +       =  1 2
-                3 4    2 3      5 7
+$matrix.add( row => 1, [2,3] );
 
-    $matrix.add( column => 1, (2,3) );
+Example:    1 2  +       =  1 2
+            3 4    2 3      5 7
 
-    Example:    1 2  +   2   =  1 4
-                3 4      3      3 7
+$matrix.add( column => 1, (2,3) );
+
+Example:    1 2  +   2   =  1 4
+            3 4      3      3 7
+
+=end code
 
 =head4 L<add scalar|#add>
 
@@ -1030,15 +1289,18 @@ every element gets added to.
 In case you provide row and column numbber (three args), only a single element
 of the result matrix might be different.
 
-    $matrix.add( $number );       # adds number to every element
-    $matrix + $number;            # works too
+=begin code :lang<raku>
 
-    Example:    1 2  +  5    =  6 7
-                3 4             8 9
+$matrix.add( $number );       # adds number to every element
+$matrix + $number;            # works too
 
-    $matrix.add( row => 1, 3 ):             [[1,2],[6,7]]
-    $matrix.add( row => 1, column=> 0, 2 ): [[1,2],[5,4]]
+Example:    1 2  +  5    =  6 7
+            3 4             8 9
 
+$matrix.add( row => 1, 3 ):             [[1,2],[6,7]]
+$matrix.add( row => 1, column=> 0, 2 ): [[1,2],[5,4]]
+
+=end code
 
 =head3 L<multiply|#mathematical-operations>
 
@@ -1056,12 +1318,15 @@ operands with the same indices (position).
 Instead of a Math::Matrix object you can also provide the content of a matrix as
 L<new []|#new-->, L<new ()|#new---1> or L<new ""|#new---2> would accept it.
 
+=begin code :lang<raku>
 
-    my $product = $matrix.multiply( $matrix2 );  # element wise multiplication of same size matrices
-    my $p = $matrix * $matrix2;                  # works too
+my $product = $matrix.multiply( $matrix2 );  # element wise multiplication of same size matrices
+my $p = $matrix * $matrix2;                  # works too
 
-    Example:    1 2  *  2 3  =   2  6
-                3 4     4 5     12 20
+Example:    1 2  *  2 3  =   2  6
+            3 4     4 5     12 20
+
+=end code
 
 =head4 L<multiply vector|#multiply>
 
@@ -1069,11 +1334,14 @@ Takes a vector (list of numbers) and a Pair thst specifies an existing row or co
 This row or column will than multiplied with the vector
 (element one by vector element one, and so on).
 
-    my $product = $matrix.multiply( row => 0, (2, 3) );   # multiply every element with number
+=begin code :lang<raku>
 
+my $product = $matrix.multiply( row => 0, (2, 3) );   # multiply every element with number
 
-    Example:    1 2  *  2 3  =  2 6
-                3 4             3 4
+Example:    1 2  *  2 3  =  2 6
+            3 4             3 4
+
+=end code
 
 =head4 L<multiply scalar|#multiply>
 
@@ -1082,46 +1350,54 @@ When you additionally add a valid row or column index, only the cells in that ro
 column get multiplied. (This is especially useful, when doing Gaussian elimination.)
 If both are provided, only one cell gets multiplied.
 
-    my $product = $matrix.multiply( $number );   # multiply every element with number
-    my $p = $matrix * $number;                   # does the same
+=begin code :lang<raku>
 
-    Example:    1 2  *  5    =   5 10
-                3 4             15 20
+my $product = $matrix.multiply( $number );   # multiply every element with number
+my $p = $matrix * $number;                   # does the same
 
-    $matrix.multiply( row => 0, 2);
+Example:    1 2  *  5    =   5 10
+            3 4             15 20
 
-    Example:    1 2  * 2     =  2 4
-                3 4             3 4
+$matrix.multiply( row => 0, 2);
 
-    $matrix.multiply(2, column => 0 );
+Example:    1 2  * 2     =  2 4
+            3 4             3 4
 
-    Example:    1 2   =  2 2
-                3 4      6 4
+$matrix.multiply(2, column => 0 );
 
-               *2
+Example:    1 2   =  2 2
+            3 4      6 4
 
-    $matrix.multiply(row => 1, column => 1, 3) : [[1,2],[3,12]]
+           *2
+
+$matrix.multiply(row => 1, column => 1, 3) : [[1,2],[3,12]]
+
+=end code
 
 =head3 L<dot-product|#mathematical-operations>
 
 Matrix multiplication of two fitting matrices (colums left == rows right).
 
-    Math::Matrix.new( [[1,2],[3,4]] ).dot-product(  Math::Matrix.new([[2,3],[4,5]]) );
+=begin code :lang<raku>
 
-    Example:    2  3
-                4  5
-             *
-         1 2   10 13  =  1*2+2*4  1*3+2*5
-         3 4   22 29     3*2+4*4  3*3+4*5
+Math::Matrix.new( [[1,2],[3,4]] ).dot-product(  Math::Matrix.new([[2,3],[4,5]]) );
 
-    my $product = $matrix1.dot-product( $matrix2 )
-    my $c = $a dot $b;              # works too as operator alias
-    my $c = $a ⋅ $b;                # unicode operator alias
+Example:    2  3
+            4  5
+         *
+     1 2   10 13  =  1*2+2*4  1*3+2*5
+     3 4   22 29     3*2+4*4  3*3+4*5
 
-    A shortcut for multiplication is the power - operator **
-    my $c = $a **  3;               # same as $a dot $a dot $a
-    my $c = $a ** -3;               # same as ($a dot $a dot $a).inverted
-    my $c = $a **  0;               # created an right sized identity matrix
+my $product = $matrix1.dot-product( $matrix2 )
+my $c = $a dot $b;              # works too as operator alias
+my $c = $a ⋅ $b;                # unicode operator alias
+
+A shortcut for multiplication is the power - operator **
+my $c = $a **  3;               # same as $a dot $a dot $a
+my $c = $a ** -3;               # same as ($a dot $a dot $a).inverted
+my $c = $a **  0;               # created an right sized identity matrix
+
+=end code
 
 =head3 L<tensor-product|#mathematical-operations>
 
@@ -1130,16 +1406,18 @@ and matrix B of size (p,q) is a matrix C of size (m*p,n*q).
 C is a concatination of matrices you get if you take every L<element|#element> of A
 and do a L<scalar multiplication|#multiply> with B as in $B.multiply($A.element(..,..)).
 
-    Example:    1 2  X*  2 3   =  1*[2 3] 2*[2 3]  =  2  3  4  6
-                3 4      4 5        [4 5]   [4 5]     4  5  8 10
-                                  3*[2 3] 4*[2 3]     6  9  8 12
-                                    [4 5]   [4 5]     8 15 16 20
+=begin code :lang<raku>
 
-    my $c = $matrixa.tensor-product( $matrixb );
-    my $c = $a X* $b;               # works too as operator alias
-    my $c = $a ⊗ $b;                # unicode operator alias
+Example:    1 2  X*  2 3   =  1*[2 3] 2*[2 3]  =  2  3  4  6
+            3 4      4 5        [4 5]   [4 5]     4  5  8 10
+                              3*[2 3] 4*[2 3]     6  9  8 12
+                                [4 5]   [4 5]     8 15 16 20
 
+my $c = $matrixa.tensor-product( $matrixb );
+my $c = $a X* $b;               # works too as operator alias
+my $c = $a ⊗ $b;                # unicode operator alias
 
+=end code
 
 =head2 L<List Like Operations|#methods>
 
@@ -1148,21 +1426,26 @@ but make also sense in context of matrices:
  L<elems|#elems>, L<elem|#elem>, L<cont|#cont>, L<map|#map>, L<map-with-index|#map-with-index>,
  L<reduce|#reduce>, L<reduce-rows|#reduce-rows>, L<reduce-columns|#reduce-columns>
 
-
 =head3 L<elems|#list-like-operations>
 
 Number (count) of L<element|#element>s = rows * columns (see L<size|#size>).
 
-    say $matrix.elems();
+=begin code :lang<raku>
+
+say $matrix.elems();
+
+=end code
 
 =head3 L<elem|#list-like-operations>
 
 Asks if all L<element|#element> of Matrix (cell) values are an element of the given set or range.
 
+=begin code :lang<raku>
 
-    Math::Matrix.new([[1,2],[3,4]]).elem(1..4) :   True
-    Math::Matrix.new([[1,2],[3,4]]).elem(2..5) :   False, 1 is not in 2..5
+Math::Matrix.new([[1,2],[3,4]]).elem(1..4) :   True
+Math::Matrix.new([[1,2],[3,4]]).elem(2..5) :   False, 1 is not in 2..5
 
+=end code
 
 =head3 L<cont|#list-like-operations>
 
@@ -1170,12 +1453,15 @@ Asks if the matrix contains a value equal to the only argument of the method.
 If a range is provided as argument, at least one value has to be
 within this range to make the result true.
 
-    Math::Matrix.new([[1,2],[3,4]]).cont(1)   : True
-    Math::Matrix.new([[1,2],[3,4]]).cont(5)   : False
-    Math::Matrix.new([[1,2],[3,4]]).cont(3..7): True
+=begin code :lang<raku>
 
-    MM [[1,2],[3,4]] (cont) 1                 # True too
+Math::Matrix.new([[1,2],[3,4]]).cont(1)   : True
+Math::Matrix.new([[1,2],[3,4]]).cont(5)   : False
+Math::Matrix.new([[1,2],[3,4]]).cont(3..7): True
 
+MM [[1,2],[3,4]] (cont) 1                 # True too
+
+=end code
 
 =head3 L<map|#list-like-operations>
 
@@ -1185,34 +1471,45 @@ a provided code block (required argument) will be run once.
 That block will be given the elements(m,n) value as an argument.
 The return value of the block will be the content of the element(m,n) of the resulting matrix.
 
-    say $matrix.map(* + 1) :
+=begin code :lang<raku>
 
-    2 3
-    4 5
+say $matrix.map(* + 1) :
+
+2 3
+4 5
+
+=end code
 
 By provding values (Ranges) to the named arguments I<rows> and I<columns> (no special order required),
 only a subset of rows or columns will be mapped - the rest will be just copied.
 
-    say $matrix.map( rows => (0..0), {$_ * 2}) :
+=begin code :lang<raku>
 
-    2 4
-    3 4
+say $matrix.map( rows => (0..0), {$_ * 2}) :
 
-    say $matrix.map( rows => (1..*), columns => (1..1), {$_ ** 2}) :
+2 4
+3 4
 
-    1  2
-    3 16
+say $matrix.map( rows => (1..*), columns => (1..1), {$_ ** 2}) :
+
+1  2
+3 16
+
+=end code
 
 =head3 L<map-with-index|#list-like-operations>
 
 Works just like L<map|#map> with the only difference that the given block
 can recieve one to three arguments: (row index, column index and cell value).
 
-    say $matrix.map-with-index: {$^m == $^n ?? $^value !! 0 } :
+=begin code :lang<raku>
 
-    1 0
-    0 4
+say $matrix.map-with-index: {$^m == $^n ?? $^value !! 0 } :
 
+1 0
+0 4
+
+=end code
 
 =head3 L<reduce|#list-like-operations>
 
@@ -1222,22 +1519,34 @@ to the previous result and the next element. I starts with the element [0][0]
 and moving from left to right in the first row and continue with the first
 element of the next row.
 
-    Math::Matrix.new([[1,2],[3,4]]).reduce(&[+]): 10 = 1 + 2 + 3 + 4
-    Math::Matrix.new([[1,2],[3,4]]).reduce(&[*]): 10 = 1 * 2 * 3 * 4
+=begin code :lang<raku>
+
+Math::Matrix.new([[1,2],[3,4]]).reduce(&[+]): 10 = 1 + 2 + 3 + 4
+Math::Matrix.new([[1,2],[3,4]]).reduce(&[*]): 10 = 1 * 2 * 3 * 4
+
+=end code
 
 =head3 L<reduce-rows|#list-like-operations>
 
 Reduces (as described above) every row into one value, so the overall result
 will be a list. In this example we calculate the sum of all elements in a row:
 
-    say Math::Matrix.new([[1,2],[3,4]]).reduce-rows(&[+]): (3, 7)
+=begin code :lang<raku>
+
+say Math::Matrix.new([[1,2],[3,4]]).reduce-rows(&[+]): (3, 7)
+
+=end code
 
 =head3 L<reduce-columns|#list-like-operations>
 
 Similar to reduce-rows, this method reduces each column to one value in the
 resulting list:
 
-    say Math::Matrix.new([[1,2],[3,4]]).reduce-columns(&[*]): (3, 8)
+=begin code :lang<raku>
+
+say Math::Matrix.new([[1,2],[3,4]]).reduce-columns(&[*]): (3, 8)
+
+=end code
 
 
 =head2 L<Structural Operations|#methods>
@@ -1249,37 +1558,53 @@ L<splice-rows|#splice-rows>, L<splice-columns|#splice-columns>
 
 =head3 L<move-row|#structural-matrix-operations>
 
-    Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).move-row(0,1);  # move row 0 to 1
-    Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).move-row(0=>1); # same
+=begin code :lang<raku>
 
-    1 2 3           4 5 6
-    4 5 6    ==>    1 2 3
-    7 8 9           7 8 9
+Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).move-row(0,1);  # move row 0 to 1
+Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).move-row(0=>1); # same
+
+1 2 3           4 5 6
+4 5 6    ==>    1 2 3
+7 8 9           7 8 9
+
+=end code
 
 =head3 L<move-column|#structural-matrix-operations>
 
-    Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).move-column(2,1);
-    Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).move-column(2=>1); # same
+=begin code :lang<raku>
 
-    1 2 3           1 3 2
-    4 5 6    ==>    4 6 5
-    7 8 9           7 9 8
+Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).move-column(2,1);
+Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).move-column(2=>1); # same
+
+1 2 3           1 3 2
+4 5 6    ==>    4 6 5
+7 8 9           7 9 8
+
+=end code
 
 =head3 L<swap-rows|#structural-matrix-operations>
 
-    Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).swap-rows(2,0);
+=begin code :lang<raku>
 
-    1 2 3           7 8 9
-    4 5 6    ==>    4 5 6
-    7 8 9           1 2 3
+Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).swap-rows(2,0);
+
+1 2 3           7 8 9
+4 5 6    ==>    4 5 6
+7 8 9           1 2 3
+
+=end code
 
 =head3 L<swap-columns|#structural-matrix-operations>
 
-    Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).swap-columns(0,2);
+=begin code :lang<raku>
 
-    1 2 3           3 2 1
-    4 5 6    ==>    6 5 4
-    7 8 9           9 8 7
+Math::Matrix.new([[1,2,3],[4,5,6],[7,8,9]]).swap-columns(0,2);
+
+1 2 3           3 2 1
+4 5 6    ==>    6 5 4
+7 8 9           9 8 7
+
+=end code
 
 =head3 L<splice-rows|#structural-matrix-operations>
 
@@ -1288,50 +1613,56 @@ The third and alos optional parameter will be an array of arrays (line .new woul
 that fitting row lengths. These rows will be inserted before the row with the number of first parameter.
 The third parameter can also be a fitting Math::Matrix.
 
-    $matrix.splice-rows(0,0, Math::Matrix.new([[5,6],[7,8]]) ); # aka prepend
-    $matrix.splice-rows(0,0,                  [[5,6],[7,8]]  ); # same result
+=begin code :lang<raku>
 
-    5 6
-    7 8
-    1 2
-    3 4
+$matrix.splice-rows(0,0, Math::Matrix.new([[5,6],[7,8]]) ); # aka prepend
+$matrix.splice-rows(0,0,                  [[5,6],[7,8]]  ); # same result
 
-    $matrix.splice-rows(1,0, Math::Matrix.new([[5,6],[7,8]]) ); # aka insert
-    $matrix.splice-rows(1,0,                  [[5,6],[7,8]]  ); # same result
+5 6
+7 8
+1 2
+3 4
 
-    1 2
-    5 6
-    7 8
-    3 4
+$matrix.splice-rows(1,0, Math::Matrix.new([[5,6],[7,8]]) ); # aka insert
+$matrix.splice-rows(1,0,                  [[5,6],[7,8]]  ); # same result
 
-    $matrix.splice-rows(1,1, Math::Matrix.new([[5,6],[7,8]]) ); # aka replace
-    $matrix.splice-rows(1,1,                  [[5,6],[7,8]]  ); # same result
+1 2
+5 6
+7 8
+3 4
 
-    1 2
-    5 6
-    7 8
+$matrix.splice-rows(1,1, Math::Matrix.new([[5,6],[7,8]]) ); # aka replace
+$matrix.splice-rows(1,1,                  [[5,6],[7,8]]  ); # same result
 
-    $matrix.splice-rows(2,0, Math::Matrix.new([[5,6],[7,8]]) ); # aka append
-    $matrix.splice-rows(2,0,                  [[5,6],[7,8]]  ); # same result
-    $matrix.splice-rows(-1,0,                 [[5,6],[7,8]]  ); # with negative index
+1 2
+5 6
+7 8
 
-    1 2
-    3 4
-    5 6
-    7 8
+$matrix.splice-rows(2,0, Math::Matrix.new([[5,6],[7,8]]) ); # aka append
+$matrix.splice-rows(2,0,                  [[5,6],[7,8]]  ); # same result
+$matrix.splice-rows(-1,0,                 [[5,6],[7,8]]  ); # with negative index
+
+1 2
+3 4
+5 6
+7 8
+
+=end code
 
 =head3 L<splice-columns|#structural-matrix-operations>
 
 Same as splice-rows, just horizontally.
 
-    $matrix.splice-columns(2,0, Math::Matrix.new([[5,6],[7,8]]) ); # aka append
-    $matrix.splice-columns(2,0,                  [[5,6],[7,8]]  ); # same result
-    $matrix.splice-columns(-1,0,                 [[5,6],[7,8]]  ); # same result with negative index
+=begin code :lang<raku>
 
-    1 2  ~  5 6  =  1 2 5 6
-    3 4     7 8     3 4 7 8
+$matrix.splice-columns(2,0, Math::Matrix.new([[5,6],[7,8]]) ); # aka append
+$matrix.splice-columns(2,0,                  [[5,6],[7,8]]  ); # same result
+$matrix.splice-columns(-1,0,                 [[5,6],[7,8]]  ); # same result with negative index
 
+1 2  ~  5 6  =  1 2 5 6
+3 4     7 8     3 4 7 8
 
+=end code
 
 =head2 L<Shortcuts|#methods>
 
@@ -1342,7 +1673,6 @@ Summary of all shortcut aliases (left) and their long form (right).
 =item conj  -->  L<conjugated|#conjugated>
 =item det  -->  L<determinant|#determinant>
 =item rref  -->  L<reduced-row-echelon-form|#reduced-row-echelon-form>
-
 
 =head2 L<Operator Methods|#methods>
 
@@ -1382,44 +1712,48 @@ The only exception is MM operator, a shortcut to create a matrix.
 That has to be importet explicitly with the tag :MM or :ALL.
 The postcircumfix [] - op will always work.
 
-    my $a   = +$matrix               # Num context, Euclidean norm
-    my $b   = ?$matrix               # Bool context, True if any element has a none zero value
-    my $str = ~$matrix               # String context, matrix content, space and new line separated as table
-    my $l   = |$matrix               # list context, list of all elements, row-wise
-    my $a   = @ $matrix              # same thing, but as Array
-    my $h   = % $matrix              # hash context, similar to .kv, so that %$matrix{0}{0} is first element
+=begin code :lang<raku>
 
-    $matrixa == $matrixb             # check if both have same size and they are element wise equal
-    $matrixa ~~ $matrixb             # same thing
+my $a   = +$matrix               # Num context, Euclidean norm
+my $b   = ?$matrix               # Bool context, True if any element has a none zero value
+my $str = ~$matrix               # String context, matrix content, space and new line separated as table
+my $l   = |$matrix               # list context, list of all elements, row-wise
+my $a   = @ $matrix              # same thing, but as Array
+my $h   = % $matrix              # hash context, similar to .kv, so that %$matrix{0}{0} is first element
 
-    my $sum =  $matrixa + $matrixb;  # element wise sum of two same sized matrices
-    my $sum =  $matrix  + $number;   # add number to every element
+$matrixa == $matrixb             # check if both have same size and they are element wise equal
+$matrixa ~~ $matrixb             # same thing
 
-    my $dif =  $matrixa - $matrixb;  # element wise difference of two same sized matrices
-    my $dif =  $matrix  - $number;   # subtract number from every element
-    my $neg = -$matrix               # negate value of every element
+my $sum =  $matrixa + $matrixb;  # element wise sum of two same sized matrices
+my $sum =  $matrix  + $number;   # add number to every element
 
-    my $p   =  $matrixa * $matrixb;  # element wise product of two same sized matrices
-    my $sp  =  $matrix  * $number;   # multiply number to every element
+my $dif =  $matrixa - $matrixb;  # element wise difference of two same sized matrices
+my $dif =  $matrix  - $number;   # subtract number from every element
+my $neg = -$matrix               # negate value of every element
 
-    my $dp  =  $a dot $b;            # dot product of two fitting matrices (cols a = rows b)
-    my $dp  =  $a ⋅ $b;              # dot product, unicode (U+022C5)
-    my $dp  =  $a ÷ $b;              # alias to $a dot $b.inverted, (U+000F7)
+my $p   =  $matrixa * $matrixb;  # element wise product of two same sized matrices
+my $sp  =  $matrix  * $number;   # multiply number to every element
 
-    my $c   =  $a **  3;             # $a to the power of 3, same as $a dot $a dot $a
-    my $c   =  $a ** -3;             # alias to ($a dot $a dot $a).inverted
-    my $c   =  $a **  0;             # creats an right sized identity matrix
+my $dp  =  $a dot $b;            # dot product of two fitting matrices (cols a = rows b)
+my $dp  =  $a ⋅ $b;              # dot product, unicode (U+022C5)
+my $dp  =  $a ÷ $b;              # alias to $a dot $b.inverted, (U+000F7)
 
-    my $tp  =  $a X* $b;             # tensor product, same precedence as infix: x (category Replication)
-    my $tp  =  $a ⊗ $b;              # tensor product, unicode (U+02297)
+my $c   =  $a **  3;             # $a to the power of 3, same as $a dot $a dot $a
+my $c   =  $a ** -3;             # alias to ($a dot $a dot $a).inverted
+my $c   =  $a **  0;             # creats an right sized identity matrix
 
-     ｜$matrix ｜                     # determinant, unicode (U+0FF5C)
-     ‖ $matrix ‖                     # L2 norm (euclidean p=2 to the square), (U+02016)
+my $tp  =  $a X* $b;             # tensor product, same precedence as infix: x (category Replication)
+my $tp  =  $a ⊗ $b;              # tensor product, unicode (U+02297)
 
-       $matrix[1][2]                 # 2nd row, 3rd column element - works even under :MANDATORY tag
+ ｜$matrix ｜                     # determinant, unicode (U+0FF5C)
+ ‖ $matrix ‖                     # L2 norm (euclidean p=2 to the square), (U+02016)
 
-    MM [[1]]                         # a new matrix, has higher precedence than postcircumfix:[]
-    MM '1'                           # string alias
+   $matrix[1][2]                 # 2nd row, 3rd column element - works even under :MANDATORY tag
+
+MM [[1]]                         # a new matrix, has higher precedence than postcircumfix:[]
+MM '1'                           # string alias
+
+=end code
 
 =head1 L<Export Tags|#synopsis>
 

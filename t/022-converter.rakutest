@@ -1,6 +1,7 @@
-use lib "lib";
 use Test;
+
 use Math::Matrix;
+
 plan 23;
 
 my $matrixi = Math::Matrix.new([[1,2],[3,4]]);
@@ -37,3 +38,5 @@ ok $matrixi.Array == [[1, 2], [3, 4]]                  , "Array context";
 ok $matrixi.Hash == { 0=>{0=>1,1=>2}, 1=>{0=>3, 1=>4}} , "Hash context";
 
 ok Math::Matrix.gist eq "(Math::Matrix)"               , "gist of type object";
+
+# vim: expandtab shiftwidth=4

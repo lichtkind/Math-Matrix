@@ -1,6 +1,7 @@
-use lib "lib";
 use Test;
+
 use Math::Matrix;
+
 plan 8;
 
 my $matrix = Math::Matrix.new([[1,2],[3,4]]);
@@ -123,6 +124,4 @@ subtest {
     ok ($a X* $b) ~~ $p,                  "Simple multiplication check with x operator";
 }, "Tensor Product";
 
-
-
-
+# vim: expandtab shiftwidth=4

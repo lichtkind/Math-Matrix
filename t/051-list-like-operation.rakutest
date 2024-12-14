@@ -1,6 +1,7 @@
-use lib "lib";
 use Test;
+
 use Math::Matrix :ALL;
+
 plan 5;
 
 my $morecols = Math::Matrix.new( [[1,2,3],[4,5,6]] );
@@ -46,3 +47,5 @@ subtest {
     ok $morecols.reduce-columns(&[*])== (4,10,18),      "simple column product";
     ok $id.reduce-rows( &[>] ) == (True, False, False), "question if row is sorted";
 }, "Reduce";
+
+# vim: expandtab shiftwidth=4
