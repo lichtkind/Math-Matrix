@@ -1362,7 +1362,7 @@ my $dp  =  $a ÷ $b;              # alias to $a dot $b.inverted, (U+000F7)
 
 my $c   =  $a **  3;             # $a to the power of 3, same as $a dot $a dot $a
 my $c   =  $a ** -3;             # alias to ($a dot $a dot $a).inverted
-my $c   =  $a **  0;             # creats an right sized identity matrix
+my $c   =  $a **  0;             # creates an right sized identity matrix
 
 my $tp  =  $a X* $b;             # tensor product, same precedence as infix: x (category Replication)
 my $tp  =  $a ⊗ $b;              # tensor product, unicode (U+02297)
