@@ -1,5 +1,5 @@
 {
-  "auth": "zef:raku-community-modules",
+  "auth": "zef:lichtkind",
   "authors": [
     "Pierre Vigier",
     "Herbert Breunung"
@@ -20,8 +20,9 @@
     "Math::Matrix::Util": "lib/Math/Matrix/Util.rakumod"
   },
   "resources": [
+    "help"
   ],
-  "source-url": "https://github.com/raku-community-modules/Math-Matrix.git",
+  "source-url": "https://github.com/lichtkind/Math-Matrix.git",
   "tags": [
     "Math",
     "Matrix"
