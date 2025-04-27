@@ -2,7 +2,12 @@ Revision history for Math::Matrix
 
 {{$NEXT}}
 
-0.4.1  2024-12-14T15:53:23+01:00
+ 0.4.2  2025-04-27
+    = back to maintainer lichtkind
+    ~ rename perl mathod to raku
+    ' POD typo
+
+ 0.4.1  2024-12-14T15:53:23+01:00
     - First version as a Raku Community module
 
  0.4.0:
@@ -12,7 +17,7 @@ Revision history for Math::Matrix
     ! change method names to all decompositions to meet the perl 6 standards
 
 
-0.3.9:
+ 0.3.9:
     § 2019.2.13
     + bool property is-tridiagonal, is-anti-diagonal
     + method .H to created conjugated transposed matrix

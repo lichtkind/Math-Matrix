@@ -241,7 +241,7 @@ multi method gist(Math::Matrix:D: Int :$max-chars?, Int :$max-rows? --> Str) {
     $!gist;
 }
 
-multi method perl(Math::Matrix:D: --> Str){ self.WHAT.perl ~ ".new(" ~ @!rows.perl ~ ")" }
+multi method raku(Math::Matrix:D: --> Str){ self.WHAT.raku ~ ".new(" ~ @!rows.raku ~ ")" }
 
 ################################################################################
 # end of type conversion and handy shortcuts - start boolean matrix properties
