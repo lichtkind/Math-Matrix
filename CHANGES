@@ -3,6 +3,8 @@ Revision history for Math::Matrix
 {{$NEXT}}
 
  0.4.3  2025-04-27
+    =
+   + made inversion faster by patch from antoncube++
 
  0.4.2  2025-04-27
     = back to maintainer lichtkind
