@@ -1408,6 +1408,8 @@ Copyright 2015 - 2020 Pierre Vigier, Herbert Breunung
 
 Copyright 2024 The Raku Community
 
+Copyright 2025 Herbert Breunung
+
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
 [See Also](#synopsis)

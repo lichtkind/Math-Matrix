@@ -2,6 +2,8 @@ Revision history for Math::Matrix
 
 {{$NEXT}}
 
+ 0.4.3  2025-04-27
+
  0.4.2  2025-04-27
     = back to maintainer lichtkind
     ~ rename perl mathod to raku
